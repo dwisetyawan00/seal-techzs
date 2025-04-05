@@ -10,6 +10,7 @@ import { NavigationMenu } from "@/components/navigation-menu"
 import { ConnectButton, SuiClientProvider, useCurrentAccount, WalletProvider, useDisconnectWallet } from '@mysten/dapp-kit';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { networkConfig } from "@/lib/networkConfig"
+import { useRouter } from "next/navigation"
 
 export default function Page() {
   const [highlightTarget, setHighlightTarget] = useState<string | null>(null)
@@ -36,6 +37,21 @@ export default function Page() {
       }, 100)
     }
   }
+
+  const router = useRouter()
+
+  const handleTryAllowlist = () => {
+    // add exp to the user
+
+    // redirect to the allowlist page
+    router.push("/allowlist")
+  }
+
+  const handleSubscription = () => {
+    // add exp to the user
+    // redirect to the subscription page
+    router.push("/subscription")
+  }  
 
   // Reset highlight after animation completes
   useEffect(() => {
@@ -186,7 +202,7 @@ export default function Page() {
                 </div>
               </CardContent>
               <CardFooter>
-                <Button className="w-full bg-green-500 hover:bg-green-400 text-white border-2 border-green-300 font-bold group">
+                <Button onClick={handleTryAllowlist} className="w-full bg-green-500 hover:bg-green-400 text-white border-2 border-green-300 font-bold group">
                   <Users className="h-4 w-4 mr-2 text-yellow-300 group-hover:animate-bounce" /> Try it
                 </Button>
               </CardFooter>
@@ -222,7 +238,7 @@ export default function Page() {
                 </div>
               </CardContent>
               <CardFooter>
-                <Button className="w-full bg-amber-500 hover:bg-amber-400 text-white border-2 border-amber-300 font-bold group">
+                <Button onClick={handleSubscription} className="w-full bg-amber-500 hover:bg-amber-400 text-white border-2 border-amber-300 font-bold group">
                   <Zap className="h-4 w-4 mr-2 text-yellow-300 group-hover:animate-ping" /> Try it
                 </Button>
               </CardFooter>
