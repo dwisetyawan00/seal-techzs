@@ -17,7 +17,7 @@ function App() {
   const [recipientAllowlist, setRecipientAllowlist] = useState<string>('');
   const [capId, setCapId] = useState<string>('');
 
-  const connectWalletRef = useRef<HTMLButtonElement>(null)
+  const connectWalletRef = useRef<HTMLDivElement>(null)
   const level2Ref = useRef<HTMLDivElement>(null)
 
   // Handle the Start Exploring button click
@@ -64,9 +64,11 @@ function App() {
           Unlock the power of decentralized access control with fun and ease!
         </p>
 
-        <ConnectButton className={`bg-gradient-to-r from-fuchsia-600 to-pink-600 hover:from-fuchsia-500 hover:to-pink-500 text-white border-2 border-fuchsia-400 font-bold px-6 py-2 transition-all duration-300 ${
-          highlightTarget === "connectWallet" ? "animate-pulse ring-4 ring-yellow-300 scale-110" : ""
-        }`}></ConnectButton>
+        <div ref={connectWalletRef}>
+          <ConnectButton className={`bg-gradient-to-r from-fuchsia-600 to-pink-600 hover:from-fuchsia-500 hover:to-pink-500 text-white border-2 border-fuchsia-400 font-bold px-6 py-2 transition-all duration-300 ${
+            highlightTarget === "connectWallet" ? "animate-pulse ring-4 ring-yellow-300 scale-110" : ""
+          }`}></ConnectButton>
+        </div>
       </div>
 
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 mb-8">
