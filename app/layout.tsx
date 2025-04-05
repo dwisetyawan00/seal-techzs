@@ -1,7 +1,7 @@
 "use client"
 
-import type { Metadata } from 'next'
 import './globals.css'
+import '@mysten/dapp-kit/dist/index.css';
 
 const metadata = {
   title: 'Mojila Seal 🌟',

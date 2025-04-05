@@ -7,20 +7,22 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Sparkles, Trophy, Users, Zap, Home, ListChecks, Ticket, Lock, LogIn, ArrowDown } from "lucide-react"
 import { NavigationMenu } from "@/components/navigation-menu"
-import { SuiClientProvider, WalletProvider } from '@mysten/dapp-kit';
+import { ConnectButton, SuiClientProvider, useCurrentAccount, WalletProvider, useDisconnectWallet } from '@mysten/dapp-kit';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { networkConfig } from "@/lib/networkConfig"
 
 function App() {
-  const [isLoggedIn, setIsLoggedIn] = useState(false)
   const [highlightTarget, setHighlightTarget] = useState<string | null>(null)
+  const currentAccount = useCurrentAccount();
+  const [recipientAllowlist, setRecipientAllowlist] = useState<string>('');
+  const [capId, setCapId] = useState<string>('');
 
   const connectWalletRef = useRef<HTMLButtonElement>(null)
   const level2Ref = useRef<HTMLDivElement>(null)
 
   // Handle the Start Exploring button click
   const handleStartExploring = () => {
-    if (isLoggedIn) {
+    if (currentAccount) {
       // If logged in, scroll to Level 2
       setHighlightTarget("level2")
       setTimeout(() => {
@@ -35,13 +37,6 @@ function App() {
     }
   }
 
-  // Handle wallet disconnect
-  const handleDisconnect = () => {
-    setIsLoggedIn(false)
-    // Scroll to top after disconnecting
-    window.scrollTo({ top: 0, behavior: "smooth" })
-  }
-
   // Reset highlight after animation completes
   useEffect(() => {
     if (highlightTarget) {
@@ -53,7 +48,7 @@ function App() {
   }, [highlightTarget])
 
   return (<div className="min-h-screen bg-gradient-to-b from-violet-900 via-fuchsia-900 to-purple-900">
-    <NavigationMenu isLoggedIn={isLoggedIn} onDisconnect={handleDisconnect} />
+    <NavigationMenu isLoggedIn={!!currentAccount} />
 
     <main className="container mx-auto px-4 py-8">
       <div className="flex flex-col items-center justify-center space-y-4 text-center mb-8">
@@ -69,22 +64,9 @@ function App() {
           Unlock the power of decentralized access control with fun and ease!
         </p>
 
-        {isLoggedIn ? (
-          <div className="flex items-center gap-2 bg-fuchsia-800/50 rounded-full px-4 py-2 border border-fuchsia-500/50">
-            <span className="h-2 w-2 rounded-full bg-green-400 animate-pulse"></span>
-            <p className="text-sm text-fuchsia-200">me.mojila@gmail.com</p>
-          </div>
-        ) : (
-          <Button
-            ref={connectWalletRef}
-            onClick={() => setIsLoggedIn(true)}
-            className={`bg-gradient-to-r from-fuchsia-600 to-pink-600 hover:from-fuchsia-500 hover:to-pink-500 text-white border-2 border-fuchsia-400 font-bold px-6 py-2 transition-all duration-300 ${
-              highlightTarget === "connectWallet" ? "animate-pulse ring-4 ring-yellow-300 scale-110" : ""
-            }`}
-          >
-            <LogIn className="h-4 w-4 mr-2" /> Connect Wallet
-          </Button>
-        )}
+        <ConnectButton className={`bg-gradient-to-r from-fuchsia-600 to-pink-600 hover:from-fuchsia-500 hover:to-pink-500 text-white border-2 border-fuchsia-400 font-bold px-6 py-2 transition-all duration-300 ${
+          highlightTarget === "connectWallet" ? "animate-pulse ring-4 ring-yellow-300 scale-110" : ""
+        }`}></ConnectButton>
       </div>
 
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 mb-8">
@@ -156,13 +138,13 @@ function App() {
               <Zap className="h-4 w-4 mr-2 text-yellow-300" />
               Start Exploring
               <ArrowDown
-                className={`h-4 w-4 ml-2 transition-all duration-500 ${!isLoggedIn ? "opacity-100" : "opacity-0"}`}
+                className={`h-4 w-4 ml-2 transition-all duration-500 ${!currentAccount ? "opacity-100" : "opacity-0"}`}
               />
             </Button>
           </CardFooter>
         </Card>
 
-        {isLoggedIn ? (
+        {currentAccount ? (
           <>
             <Card
               ref={level2Ref}
@@ -271,7 +253,7 @@ function App() {
               <CardFooter>
                 <Button
                   className="w-full bg-gray-600 hover:bg-gray-500 text-white border-2 border-gray-400 font-bold"
-                  onClick={() => setIsLoggedIn(true)}
+                  onClick={handleStartExploring}
                 >
                   <LogIn className="h-4 w-4 mr-2" /> Connect to Unlock
                 </Button>
@@ -302,7 +284,7 @@ function App() {
               <CardFooter>
                 <Button
                   className="w-full bg-gray-600 hover:bg-gray-500 text-white border-2 border-gray-400 font-bold"
-                  onClick={() => setIsLoggedIn(true)}
+                  onClick={handleStartExploring}
                 >
                   <LogIn className="h-4 w-4 mr-2" /> Connect to Unlock
                 </Button>
@@ -312,7 +294,7 @@ function App() {
         )}
       </div>
 
-      {isLoggedIn ? (
+      {currentAccount ? (
         <div className="flex justify-center">
           <div className="bg-fuchsia-800/50 border-2 border-fuchsia-400/70 rounded-lg p-4 max-w-md text-center shadow-lg shadow-fuchsia-700/30">
             <h3 className="text-lg font-bold text-fuchsia-200 mb-2">Your Progress</h3>
@@ -338,7 +320,7 @@ function App() {
               Connect your wallet to unlock all features and track your progress
             </p>
             <Button
-              onClick={() => setIsLoggedIn(true)}
+              onClick={handleStartExploring}
               className={`bg-gradient-to-r from-violet-600 to-fuchsia-600 hover:from-violet-500 hover:to-fuchsia-500 text-white border-2 border-violet-400 font-bold px-6 ${
                 highlightTarget === "connectWallet" ? "animate-pulse ring-4 ring-yellow-300" : ""
               }`}
