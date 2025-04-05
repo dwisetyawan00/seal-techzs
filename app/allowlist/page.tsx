@@ -2,7 +2,7 @@
 
 import type React from "react"
 
-import { useState } from "react"
+import { useCallback, useEffect, useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import {
@@ -31,39 +31,81 @@ import {
   LinkIcon,
   Upload,
   UserPlus,
+  PersonStanding,
 } from "lucide-react"
 import { NavigationMenu } from "@/components/navigation-menu"
-import { ConnectButton, useCurrentAccount } from "@mysten/dapp-kit"
+import { ConnectButton, useCurrentAccount, useSuiClient } from "@mysten/dapp-kit"
+import { useNetworkVariable } from "@/lib/networkConfig"
 
-// Mock data for allowlists
-const mockAllowlists = [
-  {
-    id: "0x722d1cce...",
-    name: "Mojila",
-    lastUpdated: "2 days ago",
-  },
-  {
-    id: "0x67a00174...",
-    name: "Mojila",
-    lastUpdated: "1 week ago",
-  },
-  {
-    id: "0x6f08dfeb...",
-    name: "Mojila Try Allow List",
-    lastUpdated: "3 weeks ago",
-  },
-]
+export interface CardItem {
+  cap_id: string;
+  allowlist_id: string;
+  list: string[];
+  name: string;
+}
+
+export interface Cap {
+  id: string;
+  allowlist_id: string;
+}
 
 export default function AllowlistPage() {
   const currentAccount = useCurrentAccount();
   const [highlightedCard, setHighlightedCard] = useState<string | null>(null)
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [isManageModalOpen, setIsManageModalOpen] = useState(false)
-  const [selectedAllowlist, setSelectedAllowlist] = useState<(typeof mockAllowlists)[0] | null>(null)
+  const [selectedAllowlist, setSelectedAllowlist] = useState<CardItem | null>(null)
   const [newAllowlistName, setNewAllowlistName] = useState("")
   const [newAddress, setNewAddress] = useState("")
   const [isSubmitting, setIsSubmitting] = useState(false)
-  const [allowlists, setAllowlists] = useState(mockAllowlists)
+  const packageId = useNetworkVariable('packageId');
+  const suiClient = useSuiClient();
+
+  const [cardItems, setCardItems] = useState<CardItem[]>([]);
+
+  const getCapObj = useCallback(async () => {
+    if (!currentAccount?.address) return;
+
+    const res = await suiClient.getOwnedObjects({
+      owner: currentAccount?.address,
+      options: {
+        showContent: true,
+        showType: true,
+      },
+      filter: {
+        StructType: `${packageId}::allowlist::Cap`,
+      },
+    });
+    const caps = res.data
+      .map((obj) => {
+        const fields = (obj!.data!.content as { fields: any }).fields;
+        return {
+          id: fields?.id.id,
+          allowlist_id: fields?.allowlist_id,
+        };
+      })
+      .filter((item) => item !== null) as Cap[];
+    const cardItems: CardItem[] = await Promise.all(
+      caps.map(async (cap) => {
+        const allowlist = await suiClient.getObject({
+          id: cap.allowlist_id,
+          options: { showContent: true },
+        });
+        const fields = (allowlist.data?.content as { fields: any })?.fields || {};
+        return {
+          cap_id: cap.id,
+          allowlist_id: cap.allowlist_id,
+          list: fields.list,
+          name: fields.name,
+        };
+      }),
+    );
+    setCardItems(cardItems);
+  }, [currentAccount?.address]);
+
+  useEffect(() => {
+    getCapObj();
+  }, [getCapObj]);
 
   // Handle card highlight animation
   const handleHighlightCard = (id: string) => {
@@ -72,7 +114,7 @@ export default function AllowlistPage() {
   }
 
   // Handle manage allowlist
-  const handleManage = (allowlist: (typeof mockAllowlists)[0]) => {
+  const handleManage = (allowlist: CardItem) => {
     setSelectedAllowlist(allowlist)
     setIsManageModalOpen(true)
   }
@@ -90,12 +132,13 @@ export default function AllowlistPage() {
       const newId = "0x" + Math.random().toString(16).substring(2, 10) + "..."
 
       // Add new allowlist to the list
-      setAllowlists([
-        ...allowlists,
+      setCardItems([
+        ...cardItems,
         {
-          id: newId,
+          cap_id: newId,
           name: newAllowlistName,
-          lastUpdated: "just now",
+          allowlist_id: newId,
+          list: [],
         },
       ])
 
@@ -201,13 +244,16 @@ export default function AllowlistPage() {
                 <DialogHeader>
                   <DialogTitle className="text-2xl font-bold text-white flex items-center gap-2">
                     <ListChecks className="h-5 w-5 text-green-300" />
-                    Admin View: Allowlist {selectedAllowlist?.name} (ID {selectedAllowlist?.id})
+                    Admin View: Allowlist {selectedAllowlist?.name}
                   </DialogTitle>
                 </DialogHeader>
 
                 <div className="space-y-6">
                   {/* Share Link Section */}
                   <div className="space-y-2">
+                    <div>
+                    <span className="text-sm">ID {selectedAllowlist?.allowlist_id}</span>
+                    </div>
                     <div className="flex items-center gap-2">
                       <LinkIcon className="h-4 w-4 text-green-300" />
                       <span className="font-semibold text-white">Share</span>
@@ -246,8 +292,8 @@ export default function AllowlistPage() {
                           <SelectValue placeholder="Select service" />
                         </SelectTrigger>
                         <SelectContent className="bg-gray-800 border-gray-700 text-white">
-                          <SelectItem value="staketab.org">staketab.org</SelectItem>
-                          <SelectItem value="other">Other service</SelectItem>
+                          <SelectItem value="staketab.org">Staketab.org</SelectItem>
+                          <SelectItem value="redundax.com">Redundax.com</SelectItem>
                         </SelectContent>
                       </Select>
                     </div>
@@ -276,11 +322,11 @@ export default function AllowlistPage() {
             </Dialog>
 
             <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 mb-8">
-              {allowlists.map((list) => (
+              {cardItems.map((list) => (
                 <Card
-                  key={list.id}
+                  key={list.allowlist_id}
                   className={`bg-gradient-to-br from-green-600/90 to-emerald-700/90 border-2 text-white overflow-hidden transform transition-all hover:scale-105 hover:shadow-xl hover:shadow-green-500/20 ${
-                    highlightedCard === list.id
+                    highlightedCard === list.allowlist_id
                       ? "animate-pulse border-yellow-300 border-4 scale-105"
                       : "border-green-400"
                   }`}
@@ -291,14 +337,14 @@ export default function AllowlistPage() {
                       {list.name}
                     </CardTitle>
                     <CardDescription className="text-green-100 flex items-center gap-1">
-                      <span className="text-xs bg-green-700/50 px-2 py-0.5 rounded-full">{list.id}</span>
+                      <span className="text-xs bg-green-700/50 px-2 py-0.5 rounded-full">{list.allowlist_id}</span>
                     </CardDescription>
                   </CardHeader>
                   <CardContent className="text-sm">
                     <div className="flex justify-center items-center">
                       <div className="bg-green-700/30 rounded-lg p-3 text-center">
-                        <Clock className="h-5 w-5 text-green-300 mx-auto mb-1" />
-                        <span className="text-green-100">Last updated {list.lastUpdated}</span>
+                        <PersonStanding className="h-5 w-5 text-green-300 mx-auto mb-1" />
+                        <span className="text-green-100">User {list.list.length}</span>
                       </div>
                     </div>
                   </CardContent>
@@ -306,7 +352,7 @@ export default function AllowlistPage() {
                     <Button
                       className="flex-1 bg-green-500 hover:bg-green-400 text-white border-2 border-green-300 font-bold group"
                       onClick={() => {
-                        handleHighlightCard(list.id)
+                        handleHighlightCard(list.allowlist_id)
                         handleManage(list)
                       }}
                     >
@@ -351,7 +397,7 @@ export default function AllowlistPage() {
                 <h3 className="text-lg font-bold text-fuchsia-200 mb-2">Allowlist Stats</h3>
                 <div className="flex justify-center mb-4">
                   <div className="bg-fuchsia-700/50 rounded-lg p-3 px-8">
-                    <div className="text-2xl font-bold text-white">{allowlists.length}</div>
+                    <div className="text-2xl font-bold text-white">{cardItems.length}</div>
                     <div className="text-xs text-fuchsia-300">Total Lists</div>
                   </div>
                 </div>
