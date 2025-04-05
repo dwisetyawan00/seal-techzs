@@ -64,8 +64,10 @@ function App() {
           Unlock the power of decentralized access control with fun and ease!
         </p>
 
-        <div ref={connectWalletRef}>
-          <ConnectButton className={`bg-gradient-to-r from-fuchsia-600 to-pink-600 hover:from-fuchsia-500 hover:to-pink-500 text-white border-2 border-fuchsia-400 font-bold px-6 py-2 transition-all duration-300 ${
+        <div ref={connectWalletRef} className={`rounded p-2 ${
+              highlightTarget === "connectWallet" ? "border-yellow-300 border-4" : "border-violet-400/70"
+            }`}>
+          <ConnectButton className={`bg-gradient-to-r from-fuchsia-600 to-pink-600 hover:from-fuchsia-500 hover:to-pink-500 !text-white border-2 border-fuchsia-400 font-bold px-6 py-2 transition-all duration-300 ${
             highlightTarget === "connectWallet" ? "animate-pulse ring-4 ring-yellow-300 scale-110" : ""
           }`}></ConnectButton>
         </div>
