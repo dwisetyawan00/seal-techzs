@@ -9,13 +9,15 @@ import {
   NavigationMenuList,
   NavigationMenuTrigger,
 } from "@/components/ui/navigation-menu"
-import { Home, ListChecks, Ticket, Sparkles, BookOpen, Trophy, Lock } from "lucide-react"
+import { Home, ListChecks, Ticket, Sparkles, BookOpen, Trophy, Lock, LogOut } from "lucide-react"
+import { Button } from "@/components/ui/button"
 
 interface NavigationMenuProps {
   isLoggedIn?: boolean
+  onDisconnect?: () => void
 }
 
-export function NavigationMenu({ isLoggedIn = false }: NavigationMenuProps) {
+export function NavigationMenu({ isLoggedIn = false, onDisconnect }: NavigationMenuProps) {
   return (
     <div className="sticky top-0 z-50 w-full border-b-2 border-yellow-400 bg-gradient-to-r from-violet-600 to-fuchsia-600 shadow-lg">
       <div className="container flex h-16 items-center px-4">
@@ -309,6 +311,19 @@ export function NavigationMenu({ isLoggedIn = false }: NavigationMenuProps) {
                 </ul>
               </NavigationMenuContent>
             </NavigationMenuItem>
+
+            {isLoggedIn && (
+              <NavigationMenuItem>
+                <Button
+                  onClick={onDisconnect}
+                  variant="ghost"
+                  className="h-10 bg-red-500/20 text-white hover:bg-red-500/30 hover:text-white border border-red-400/30"
+                >
+                  <LogOut className="mr-2 h-4 w-4 text-red-300" />
+                  <span className="font-bold">Disconnect</span>
+                </Button>
+              </NavigationMenuItem>
+            )}
           </NavigationMenuList>
         </NavMenu>
       </div>

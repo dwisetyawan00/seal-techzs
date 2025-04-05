@@ -32,6 +32,13 @@ export default function Page() {
     }
   }
 
+  // Handle wallet disconnect
+  const handleDisconnect = () => {
+    setIsLoggedIn(false)
+    // Scroll to top after disconnecting
+    window.scrollTo({ top: 0, behavior: "smooth" })
+  }
+
   // Reset highlight after animation completes
   useEffect(() => {
     if (highlightTarget) {
@@ -44,7 +51,7 @@ export default function Page() {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-violet-900 via-fuchsia-900 to-purple-900">
-      <NavigationMenu isLoggedIn={isLoggedIn} />
+      <NavigationMenu isLoggedIn={isLoggedIn} onDisconnect={handleDisconnect} />
 
       <main className="container mx-auto px-4 py-8">
         <div className="flex flex-col items-center justify-center space-y-4 text-center mb-8">
