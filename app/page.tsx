@@ -11,7 +11,7 @@ import { ConnectButton, SuiClientProvider, useCurrentAccount, WalletProvider, us
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { networkConfig } from "@/lib/networkConfig"
 
-function App() {
+export default function Page() {
   const [highlightTarget, setHighlightTarget] = useState<string | null>(null)
   const currentAccount = useCurrentAccount();
   const [recipientAllowlist, setRecipientAllowlist] = useState<string>('');
@@ -343,18 +343,3 @@ function App() {
     </footer>
   </div>)
 }
-
-const queryClient = new QueryClient()
-
-export default function Page() {
-  return (
-    <QueryClientProvider client={queryClient}>
-        <SuiClientProvider networks={networkConfig} defaultNetwork="testnet">
-          <WalletProvider autoConnect>
-            <App />
-          </WalletProvider>
-        </SuiClientProvider>
-    </QueryClientProvider>
-  )
-}
-

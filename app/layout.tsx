@@ -1,5 +1,9 @@
 "use client"
 
+import { ConnectButton, SuiClientProvider, useCurrentAccount, WalletProvider, useDisconnectWallet } from '@mysten/dapp-kit';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { networkConfig } from "@/lib/networkConfig"
+
 import './globals.css'
 import '@mysten/dapp-kit/dist/index.css';
 
@@ -7,6 +11,8 @@ const metadata = {
   title: 'Mojila Seal 🌟',
   description: 'Seal project demo from Mojila',
 }
+
+const queryClient = new QueryClient()
 
 export default function RootLayout({
   children,
@@ -24,7 +30,13 @@ export default function RootLayout({
         <meta name="description" content={metadata.description} />
         <title>{metadata.title}</title>
       </head>
-      <body>{children}</body>
+      <body><QueryClientProvider client={queryClient}>
+        <SuiClientProvider networks={networkConfig} defaultNetwork="testnet">
+          <WalletProvider autoConnect>
+            {children}
+          </WalletProvider>
+        </SuiClientProvider>
+    </QueryClientProvider></body>
     </html>
   )
 }
