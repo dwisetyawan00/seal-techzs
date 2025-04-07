@@ -3,6 +3,7 @@
 import { ConnectButton, SuiClientProvider, useCurrentAccount, WalletProvider, useDisconnectWallet } from '@mysten/dapp-kit';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { networkConfig } from "@/lib/networkConfig"
+import { WalletConnection } from "@/components/WalletConnection";
 
 import './globals.css'
 import '@mysten/dapp-kit/dist/index.css';
