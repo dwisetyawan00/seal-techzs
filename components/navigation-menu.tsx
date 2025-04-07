@@ -26,7 +26,7 @@ export function NavigationMenu({ isLoggedIn }: NavigationMenuProps) {
               <div className="rounded-full bg-white/10 p-1">
                 <Sparkles className="h-6 w-6 text-indigo-200" />
               </div>
-              <span className="text-xl font-bold text-white">Mojila Seal</span>
+              <span className="text-xl font-bold text-white">Techzs Seal</span>
             </Link>
           </div>
           
