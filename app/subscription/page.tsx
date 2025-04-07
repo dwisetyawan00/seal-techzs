@@ -561,7 +561,7 @@ export default function SubscriptionPage() {
               <Sparkles className="h-6 w-6 text-blue-300" />
             </div>
           </div>
-          <p className="text-blue-300 text-sm mb-2">Mojila Seal © 2025 - Decentralized Access Control</p>
+          <p className="text-blue-300 text-sm mb-2">Techzs Seal © 2025 - Decentralized Access Control</p>
           <div className="flex justify-center gap-4 mt-4">
             <Link href="#" className="text-blue-400 hover:text-white transition-colors">Documentation</Link>
             <Link href="#" className="text-blue-400 hover:text-white transition-colors">GitHub</Link>
