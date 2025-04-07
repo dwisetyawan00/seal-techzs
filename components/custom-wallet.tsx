@@ -37,7 +37,7 @@ export const WalletModal = ({ isOpen, onClose }: WalletModalProps) => {
           <div className="flex items-center justify-between mb-2">
             <div className="flex items-center gap-2">
               <Shield className="h-5 w-5 text-white" />
-              <h2 className="text-xl font-bold text-white">Mojila Seal</h2>
+              <h2 className="text-xl font-bold text-white">Techzs Seal</h2>
             </div>
             <span className="bg-blue-400/20 text-blue-100 text-xs px-2 py-1 rounded-full border border-blue-400/40">
               Testnet
