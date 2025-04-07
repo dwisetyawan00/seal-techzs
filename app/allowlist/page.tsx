@@ -305,7 +305,7 @@ export default function AllowlistPage() {
                           size="sm" 
                           className="bg-indigo-600 hover:bg-indigo-700 border-0 text-white"
                           onClick={() => {
-                            navigator.clipboard.writeText(`https://app.mojila.com/access/${selectedAllowlist?.allowlist_id}`)
+                            navigator.clipboard.writeText(`https://techzs-app.com/access/${selectedAllowlist?.allowlist_id}`)
                             // Add toast notification here
                           }}
                         >
@@ -554,7 +554,7 @@ export default function AllowlistPage() {
               <Sparkles className="h-6 w-6 text-indigo-300" />
             </div>
           </div>
-          <p className="text-indigo-300 text-sm mb-2">Mojila Seal © 2025 - Decentralized Access Control</p>
+          <p className="text-indigo-300 text-sm mb-2">Techzs Seal © 2025 - Decentralized Access Control</p>
           <div className="flex justify-center gap-4 mt-4">
             <Link href="#" className="text-indigo-400 hover:text-white transition-colors">Documentation</Link>
             <Link href="#" className="text-indigo-400 hover:text-white transition-colors">GitHub</Link>
