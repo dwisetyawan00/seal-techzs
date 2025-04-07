@@ -8,8 +8,8 @@ import './globals.css'
 import '@mysten/dapp-kit/dist/index.css';
 
 const metadata = {
-  title: 'Mojila Seal 🌟',
-  description: 'Seal project demo from Mojila',
+  title: 'Techzs Seal 🌟',
+  description: 'Test Project by Techzs',
 }
 
 const queryClient = new QueryClient()
