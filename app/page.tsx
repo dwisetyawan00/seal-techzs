@@ -76,7 +76,7 @@ export default function Page() {
                 </div>
                 
                 <h1 className="text-4xl md:text-6xl font-bold text-white tracking-tight mb-4">
-                  Mojila Seal
+                  Techzs Seal
                 </h1>
                 
                 <p className="text-xl text-indigo-200 max-w-2xl mx-auto mb-8">
@@ -355,7 +355,7 @@ export default function Page() {
               <Sparkles className="h-6 w-6 text-indigo-300" />
             </div>
           </div>
-          <p className="text-indigo-300 text-sm mb-2">Mojila Seal © 2025 - Decentralized Access Control</p>
+          <p className="text-indigo-300 text-sm mb-2">Techzs Seal © 2025 - Decentralized Access Control</p>
           <div className="flex justify-center gap-4 mt-4">
             <Link href="#" className="text-indigo-400 hover:text-white transition-colors">Documentation</Link>
             <Link href="#" className="text-indigo-400 hover:text-white transition-colors">GitHub</Link>
