@@ -8,7 +8,7 @@ import './globals.css'
 import '@mysten/dapp-kit/dist/index.css';
 
 const metadata = {
-  title: 'Techzs Seal 🌟',
+  title: 'Techzs-Seal',
   description: 'Test Project by Techzs',
 }
 
